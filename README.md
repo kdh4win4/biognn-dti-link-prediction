@@ -1,95 +1,167 @@
-BioGNN DTI Link Prediction
-~~~~
+# 🧬 BioGNN: Drug–Target Interaction Link Prediction
 
-Graph Neural Network (GNN) based drug–target interaction (DTI) link prediction
-for hypothesis ranking in drug discovery pipelines.
+**GNN-based target prioritization for AI-driven drug discovery**
 
-LLM → Graph → GNN → Ranked hypotheses
+---
 
-~~~~
-Purpose
-~~~~
+## 🔬 Overview
 
-This project integrates biological relations extracted from LLMs
-(e.g. PubMedBERT, BioLLM) into a unified knowledge graph, and applies
-Graph Neural Networks to predict and rank plausible drug–target interactions.
+This repository demonstrates an **end-to-end Graph Neural Network (GNN) pipeline** for **drug–target interaction (DTI) link prediction**, built as a portfolio project for **AI-driven target discovery and translational research**.
 
-~~~~
-Overall Workflow
-~~~~
+It is intentionally minimal, reproducible, and runnable from the terminal, while reflecting **real industry patterns** used in computational biology and drug discovery.
 
-1) LLM-based relation extraction (external)
-2) Knowledge graph construction
-3) GNN training (link prediction)
-4) Candidate scoring and ranking
+This project complements an upstream LLM-based hypothesis generator:
 
-~~~~
-Repository Structure
-~~~~
+LLM → biological relation extraction → candidate targets
+↓
+GNN → link prediction → prioritization
 
+---
+
+## 🚀 What This Project Demonstrates
+
+### ✅ Technical Skills
+
+* PyTorch Geometric (GCN-based GNN)
+* Graph construction for biological networks
+* End-to-end training & inference pipeline
+* Model checkpointing and reuse
+* CLI-driven reproducibility
+
+### ✅ Drug Discovery Relevance
+
+* Drug–target interaction modeling
+* Latent biological representation learning
+* Target prioritization via learned embeddings
+* Ready to extend to ChEMBL / DrugBank / CRISPR / multi-omics graphs
+
+---
+
+## 🧠 Model Architecture
+
+Node features (x)
+↓
+GCNConv (in_dim → hidden_dim)
+↓
+ReLU
+↓
+GCNConv (hidden_dim → hidden_dim)
+↓
+Node embeddings (latent biological space)
+↓
+Link score (dot product / classifier)
+
+* **Nodes**: drugs, proteins (demo-scale)
+* **Edges**: known or hypothesized interactions
+* **Output**: link score representing interaction likelihood
+
+---
+
+## 📂 Project Structure
+
+```
 biognn-dti-link-prediction/
-- README.md
-- requirements.txt
-- .gitignore
-- src/
-  - biognn/
-    - __init__.py
-    - data.py
-    - model.py
-    - train.py
-    - infer.py
-- scripts/
-  - 01_build_graph.py
-  - 02_train.sh
-  - 03_infer.sh
+├── src/biognn/
+│   ├── data.py        # graph construction
+│   ├── model.py       # DTI_GNN (GCN)
+│   ├── train.py       # training + checkpoint save
+│   └── infer.py       # inference + link scoring
+├── scripts/
+│   ├── 01_build_graph.py
+│   ├── 02_train.sh
+│   └── 03_infer.sh
+├── outputs/
+│   └── gnn_model.pt   # trained model checkpoint
+└── README.md
+```
 
-~~~~
-Local Installation
-~~~~
+---
 
-python3 -m venv .venv  
-source .venv/bin/activate  
-pip install -r requirements.txt  
+## ⚙️ How to Run (Reproducible Demo)
 
-~~~~
-Training
-~~~~
+### 1) Build Graph
 
+```bash
+python scripts/01_build_graph.py
+```
+
+### 2) Train Model
+
+```bash
 bash scripts/02_train.sh
+```
 
-~~~~
-Inference
-~~~~
+Example output:
 
-python -m src.biognn.infer --drug DRUG_ID --topk 20
+```text
+[INFO] Building demo graph...
+[INFO] Graph: num_nodes=4, num_edges=3
+[INFO] Starting training...
+Epoch 001 | Loss: ...
+...
+[DONE] Model saved to outputs/gnn_model.pt
+```
 
-~~~~
-Input Data
-~~~~
+### 3) Run Inference
 
-- Drug–protein interaction edges
-- Protein–protein interaction edges (optional)
-- LLM-extracted biomedical relations (optional)
+```bash
+bash scripts/03_infer.sh
+```
 
-~~~~
-Output
-~~~~
+Example output:
 
-Ranked list of candidate protein targets with confidence scores.
+```text
+[INFO] Loading demo graph...
+[INFO] Graph: num_nodes=4, num_edges=3
+[INFO] Embeddings shape: (4, 32)
+[RESULT] Example link score
+  node_i=0  node_j=3  score=0.2740
+```
 
-~~~~
-Design Notes
-~~~~
+---
 
-- GNN architectures: GraphSAGE / GAT
-- Task: link prediction
-- Loss: binary cross-entropy with negative sampling
-- Scalable to large biomedical graphs
-- Designed for integration with LLM-based discovery pipelines
+## 🔍 Interpretation
 
-~~~~
-Author
-~~~~
+* Node embeddings represent **learned biological states** in a latent space.
+* Link score represents a **predicted interaction likelihood** between two nodes.
+* In real applications, this supports:
 
-Dohoon Kim  
-https://github.com/kdh4win4
+  * target prioritization
+  * drug repurposing hypotheses
+  * mechanism exploration
+  * experimental design guidance
+
+---
+
+## 🔄 Extension Ideas (Real-World Ready)
+
+This pipeline is designed to scale to:
+
+* ChEMBL / DrugBank networks
+* PPI graphs and pathway graphs
+* CRISPR perturbation graphs
+* Multi-omics feature integration (transcriptomics, proteomics)
+* LLM-generated hypothesis edges
+* GNN + LLM hybrid reasoning for target discovery
+
+---
+
+## 👤 Author
+
+**Dohoon Kim**
+Senior Computational Biologist / Data Scientist
+Focus: AI for drug discovery, target identification, and translational biology
+
+---
+
+## ⭐ Why This Matters
+
+This repository demonstrates the ability to:
+
+* translate biology into graphs
+* apply GNNs to discovery problems
+* build reproducible training/inference pipelines
+* connect LLM-derived hypotheses to mechanistic graph modeling
+
+These are core skills required for **AI Computational Biologist** roles.
+
