@@ -51,10 +51,7 @@ def main(
     # ------------------------------------------------------------------
     # Model
     # ------------------------------------------------------------------
-    model = DTI_GNN(
-        in_channels=in_channels,
-        hidden_channels=hidden_channels,
-    )
+    model = DTI_GNN(in_dim=in_channels, hidden_dim=hidden_channels)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
